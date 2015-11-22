@@ -48,9 +48,24 @@ Kernel.prototype.init = function () {
         var that = this;
         this.loop = window.setInterval(function () {
             that.ticks++;
+            that.update();
             for (that.tmp.a = 0; that.tmp.a < that.modules.length; that.tmp.a++) {
                 that.modules[that.tmp.a].update();
             }
+
+
+            Mouse.buttonPressed[0] = false;
+            Mouse.buttonPressed[1] = false;
+            Mouse.buttonPressed[2] = false;
+
+            for (var u = 0; u < 255; u += 1) {
+                //Key[u] = false;
+                KeyPressed[u] = false;
+                KeyReleased[u] = false;
+            }
+            
+            Mouse.pos_last.copy(Mouse.pos);
+
         }, (1000 / that.fps) | 0)
     }
 
@@ -58,7 +73,10 @@ Kernel.prototype.init = function () {
 }
 
 Kernel.prototype.update = function () {
+    debug.beginFrame();
 
+    debug.logBreakpoint();
+    debug.logBreakpoint();
 }
 
 Kernel.prototype.end = function () {

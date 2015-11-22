@@ -226,9 +226,9 @@ Mesh.prototype.drawUV = function(canvas, camera, parent, texture){
     this._children.forEach(function (tri) {
     
       //  tri.center=tri.getcenter().rotY(parent.rotation.y).add(parent.position)
-        if (tri._cullvec.copy(tri._dotvec.copy(tri.normal).mul(parent.scale).normalize().rotY(parent.rotation.y).rotX(parent.rotation.x).rotZ(parent.rotation.z)).dot(tri._dotvec.copy(tri.center).mul(parent.scale).rotZ(parent.rotation.z).add(parent.position).pointTo(camera.from).invert()) > 0) {
-        canvas.drawFace(camera, tri,parent,texture);
-        }
+        //if (tri._cullvec.copy(tri._dotvec.copy(tri.normal).mul(parent.scale).normalize().rotY(parent.rotation.y).rotX(parent.rotation.x).rotZ(parent.rotation.z)).dot(tri._dotvec.copy(tri.center).mul(parent.scale).rotZ(parent.rotation.z).add(parent.position).pointTo(camera.from).invert()) > 0) {
+            canvas.drawFace(camera, tri,parent,texture);
+       // }
         //camera.drawFace3(canvas, tri.pos1, tri.pos2, tri.pos3, tri.color1.toHex());
         
     });
@@ -323,9 +323,9 @@ Mesh.prototype.sortQ = function (from, parent) {
     this.sortmeta.sw = 0; // ti = performance.now();
 
     for (this.sortmeta.index = 0; this.sortmeta.index < this._children.length; this.sortmeta.index++) {
-       // this._children[this.sortmeta.index]._depth = this._tmpv.copy(from).dist(this._tmpr.copy(this._children[this.sortmeta.index].center));
+     this._children[this.sortmeta.index]._depth = this._tmpv.copy(from).dist(this._tmpr.copy(this._children[this.sortmeta.index].center));
         
-        this._children[this.sortmeta.index]._depth = this._tmpv.copy(from).sub(parent.position).dist(this._tmpr.copy(this._children[this.sortmeta.index].center).mul(parent.scale).rotY(parent.rotation.y).rotX(parent.rotation.x).rotZ(parent.rotation.z));
+       // this._children[this.sortmeta.index]._depth = this._tmpv.copy(from).dist(this._tmpr.copy(this._children[this.sortmeta.index].center).mul(parent.scale).rotY(parent.rotation.y).rotX(parent.rotation.x).rotZ(parent.rotation.z));
         //dc++;
     }
     this.sortmeta.loop = true;

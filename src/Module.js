@@ -19,12 +19,12 @@ function Module() {
     this.registered = false;
     this.handle="##MODULE##";
 }
-Mouse.prototype.init = function(){
+Module.prototype.init = function(){
     return false;
 }
-Mouse.prototype.update = function(){
+Module.prototype.update = function(){
     return false;
 }
-Mouse.prototype.end = function(){
+Module.prototype.end = function(){
     return false;
 }

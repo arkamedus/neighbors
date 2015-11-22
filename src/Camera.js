@@ -20,6 +20,16 @@ function Camera() {
     this.fov = 45;
     this.aspect = 1;
     this.projection = new Projection();
+    this.animation = {
+        active: false,
+        startfrom: new Vec3(),
+        startto: new Vec3(),
+        pos: 0,
+        gain: 0.5,
+        speed: 1,
+        finishfrom: new Vec3(),
+        finishto: new Vec3()
+    };
     this._tmp = {
         v1: new Vec3(),
         v2: new Vec3(),
@@ -41,6 +51,32 @@ function Camera() {
     };
     //this.viewFloorFrustumT1 = new Tri2();
    // this.viewFloorFrustumT2 = new Tri2();
+};
+Camera.prototype.animate = function(startfrom, finishfrom, startto, finishto, speed, gain){
+    this.animation.active = true;
+    this.animation.startfrom.copy(startfrom);
+    this.animation.finishfrom.copy(finishfrom);
+    this.animation.startto.copy(startto);
+    this.animation.finishto.copy(finishto);
+    this.animation.gain = gain;
+    this.animation.pos = 0;
+    this.animation.speed = speed;
+};
+Camera.prototype.update = function(){
+    if (this.animation.active){
+        this.from.x = lerp(this.animation.startfrom.x,this.animation.finishfrom.x,gain(this.animation.pos,this.animation.gain));
+        this.from.y = lerp(this.animation.startfrom.y,this.animation.finishfrom.y,gain(this.animation.pos,this.animation.gain)); 
+        this.from.z = lerp(this.animation.startfrom.z,this.animation.finishfrom.z,gain(this.animation.pos,this.animation.gain)); 
+        
+        this.to.x = lerp(this.animation.startto.x,this.animation.finishto.x,gain(this.animation.pos,this.animation.gain));
+        this.to.y = lerp(this.animation.startto.y,this.animation.finishto.y,gain(this.animation.pos,this.animation.gain)); 
+        this.to.z = lerp(this.animation.startto.z,this.animation.finishto.z,gain(this.animation.pos,this.animation.gain)); 
+        
+        this.animation.pos+=this.animation.speed;
+        if (this.animation.pos>=1){
+         this.animation.active= false;   
+        }
+    }
 };
 Camera.prototype.drawActor = function (canvas,actor) {
 
@@ -69,17 +105,16 @@ Camera.prototype.drawActor = function (canvas,actor) {
     // ent.img = ent.img || ent.decal;
 
     this._tmp.sx = (this._tmp.p2.dist(this._tmp.p1) / 24);
-    this._tmp.sy = this._tmp.sx; //*(1+(Math.sin((KERNAL.TIMING/200)+ent.rand)*vecMagnitude(ent.velocity)*0.5));
-    this._tmp.sr = 0; //3 * ((Math.sin((Kernel._ticks / 5) + ent.rand) * vecMagnitude([ent.velocity[0], ent.velocity[1], 0]) / 4 * 0.5));
+    this._tmp.sy = this._tmp.sx;
+    this._tmp.sr = (((Math.sin(((kernel.ticks/6))+actor.rand))*(actor.velocity.mag())*3.5)); //3 * ((Math.sin((Kernel._ticks / 5) + ent.rand) * vecMagnitude([ent.velocity[0], ent.velocity[1], 0]) / 4 * 0.5));
     //var sy = 2;//Math.pow(Math.atan2(camera.from[2],char.position[2]),1.42);
 
     this._tmp.sh = 0; //60 * (1 + (Math.sin((Kernel._ticks / 2.5) + ent.rand) * 1)) * vecMagnitude([ent.velocity[0], ent.velocity[1], 0]) / 3;
 
-
-    this._tmp.sc = 1; //ent.scale || 1;
+    this._tmp.sc = actor.scale.x || 1;
     this._tmp.vx = this._tmp.p1.x - ((actor.sprite.width / 2) * this._tmp.sx * this._tmp.sc);
-    this._tmp.vy = this._tmp.p1.y - (actor.sprite.height * this._tmp.sy * this._tmp.sc) - this._tmp.sh;
-    //var di = ent.img;
+    this._tmp.vy = (this._tmp.p1.y - (actor.sprite.height * this._tmp.sy * this._tmp.sc) - this._tmp.sh)-((((1+Math.sin((kernel.ticks/3)))*(actor.velocity.mag())*500.5))*(this._tmp.sx/2));
+    //var di = ent.img5
     //context.rect(d[0]-((ent.img.width/2)*sx*sc),d[1],ent.img.width*sx*sc,ent.img.height*sx*sc);
     //context.clip();
 
